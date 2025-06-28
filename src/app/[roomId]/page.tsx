@@ -1,11 +1,19 @@
+// src/app/[roomId]/page.tsx
+
 import { type Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Oda Sayfası',
 };
 
-// ✅ Next.js 15.3+ uyumlu tür tanımı
-export default function RoomPage({ params }: { params: { roomId: string } }) {
+// ✅ Doğru tanım: Next.js 15 uyumlu
+type Props = {
+  params: {
+    roomId: string;
+  };
+};
+
+export default function RoomPage({ params }: Props) {
   return (
     <div style={{ padding: 20, color: 'white' }}>
       <h1>Oda ID: {params.roomId}</h1>
