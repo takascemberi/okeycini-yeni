@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 interface RoomPageProps {
   params: { roomId: string };
