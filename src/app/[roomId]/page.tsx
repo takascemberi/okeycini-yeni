@@ -1,23 +1,21 @@
 // src/app/[roomId]/page.tsx
 
-import { type Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Oda Sayfası',
-};
-
-// ✅ Doğru tanım: Next.js 15 uyumlu
-type Props = {
+type PageProps = {
   params: {
     roomId: string;
   };
 };
 
-export default function RoomPage({ params }: Props) {
+export default async function Page({ params }: PageProps) {
+  const { roomId } = params;
+
+  // Burada async işlemler yapabilirsin, örnek:
+  // const data = await fetch(...);
+
   return (
-    <div style={{ padding: 20, color: 'white' }}>
-      <h1>Oda ID: {params.roomId}</h1>
-      <p>Dinamik rota başarıyla çalışıyor.</p>
-    </div>
+    <main>
+      <h1>Oda ID'si: {roomId}</h1>
+      {/* Diğer içerikler buraya */}
+    </main>
   );
 }
