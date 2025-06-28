@@ -4,13 +4,8 @@ export const metadata: Metadata = {
   title: 'Oda Sayfası',
 };
 
-type RoomPageProps = {
-  params: {
-    roomId: string;
-  };
-};
-
-export default function RoomPage({ params }: RoomPageProps) {
+// ✅ Next.js 15.3+ uyumlu tür tanımı
+export default function RoomPage({ params }: { params: { roomId: string } }) {
   return (
     <div style={{ padding: 20, color: 'white' }}>
       <h1>Oda ID: {params.roomId}</h1>
