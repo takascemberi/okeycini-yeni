@@ -1,14 +1,8 @@
-interface RoomPageProps {
-  params: {
-    roomId: string;
-  };
-}
-
-export default async function RoomPage({ params }: RoomPageProps) {
+export default function RoomPage({ params }: { params: { roomId: string } }) {
   return (
-    <div style={{ color: 'white', textAlign: 'center', marginTop: '100px' }}>
-      <h1>Oda Sayfası</h1>
-      <p>Oda ID: {params.roomId}</p>
+    <div style={{ padding: 20, color: 'white' }}>
+      <h1>Oda ID: {params.roomId}</h1>
+      <p>Bu, dinamik rota ile oluşturulmuş bir sayfadır.</p>
     </div>
   );
 }
