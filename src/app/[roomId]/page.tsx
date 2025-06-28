@@ -1,11 +1,12 @@
+// src/app/[roomId]/page.tsx
+
 interface RoomPageProps {
-  params: {
-    roomId: string;
-  };
+  params: Promise<{ roomId: string }>;
 }
 
-export default function RoomPage({ params }: RoomPageProps) {
-  const { roomId } = params;
+export default async function RoomPage({ params }: RoomPageProps) {
+  const resolvedParams = await params;
+  const { roomId } = resolvedParams;
 
   return (
     <div style={{ padding: 20, color: 'white' }}>
