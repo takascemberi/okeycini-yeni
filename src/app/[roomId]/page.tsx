@@ -1,4 +1,10 @@
-export default function RoomPage({ params }: { params: { roomId: string } }) {
+type RoomPageProps = {
+  params: {
+    roomId: string;
+  };
+};
+
+export default function RoomPage({ params }: RoomPageProps) {
   return (
     <div style={{ padding: 20, color: 'white' }}>
       <h1>Oda ID: {params.roomId}</h1>
