@@ -1,139 +1,138 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unescaped-entities */
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
+import Link from 'next/link';
+
+const winnerNames = [
+  'Ayşe', 'Ahmet', 'Alex', 'John', 'Fatma', 'Yusuf', 'Maria', 'Olga', 'Hans', 'Mehmet',
+  'Ali', 'Sophia', 'Mustafa', 'Anastasia', 'George', 'Ahmed', 'Zeynep', 'Vladimir', 'Sven', 'Murat',
+  'Hassan', 'Eleni', 'Irina', 'Omar', 'Lena', 'Selim', 'Natalya', 'Jack', 'Emily', 'Deniz',
+  'Tariq', 'Anna', 'Kerem', 'Ingrid', 'Furkan', 'Hülya', 'Ivan', 'Petra', 'Cem', 'Thomas',
+  'Yara', 'Nikos', 'Leila', 'Berat', 'Mila', 'Stefan', 'Aliya', 'Okan', 'Emine', 'Jamal',
+  'Khalid', 'Amina', 'Abdullah', 'Farah', 'Rami', 'Nour', 'Kareem', 'Salma', 'Mahmoud', 'Layla',
+  'Zain', 'Rania', 'Amir', 'Nada', 'Yasin', 'Malak', 'Samir', 'Dalia', 'Tamer', 'Basma'
+];
 
 export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [showChat, setShowChat] = useState(false);
-  const [messages, setMessages] = useState<string[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [balance, setBalance] = useState(10000);
+  const [chatVisible, setChatVisible] = useState(false);
   const [ticker, setTicker] = useState('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser) router.push('/');
+      if (!currentUser) router.push('/auth/login');
       else setUser(currentUser);
     });
-
-    const interval = setInterval(() => {
-      const names = ['Ayşe', 'Mehmet', 'Ahmet', 'Zeynep', 'Fatma'];
-      const name = names[Math.floor(Math.random() * names.length)];
-      const amount = Math.floor(Math.random() * (20000 - 5000 + 1)) + 5000;
-      setTicker(`${name} ${amount.toLocaleString()} TL kazandı!`);
-    }, 180000); // 3 dakika
-
-    return () => {
-      unsubscribe();
-      clearInterval(interval);
-    };
+    return () => unsubscribe();
   }, [router]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const name = winnerNames[Math.floor(Math.random() * winnerNames.length)];
+      const amount = Math.floor(Math.random() * (20000 - 5000 + 1)) + 5000;
+      setTicker(`${name} ${amount.toLocaleString()} TL kazandı! 🎉`);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/');
   };
 
-  const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
-    setMessages((prev) => [...prev, `Siz: ${newMessage}`]);
-    setNewMessage('');
-    setTimeout(() => {
-      setMessages((prev) => [...prev, 'Müşteri temsilcilerimiz şu anda meşgul, en kısa sürede size dönüş yapılacaktır.']);
-    }, 500);
-  };
-
   return (
-    <div
-      style={{
-        backgroundImage: 'url("/lobi.png")',
-        backgroundSize: 'cover',
-        minHeight: '100vh',
-        color: 'white',
-        padding: 20,
-        position: 'relative',
-      }}
-    >
-      {/* Üst Alan */}
+    <div style={{ minHeight: '100vh', backgroundImage: 'url(/lobi.png)', backgroundSize: 'cover', padding: '1rem', color: 'white' }}>
+      {/* Üst Menü */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <strong>{user?.displayName}</strong> | Bakiye: {balance.toLocaleString()} TL
+          <strong>{user?.displayName}</strong> | Bakiye: 10.000 TL
+          <Link href="/profile"><button style={{ marginLeft: 10 }}>Profil</button></Link>
         </div>
         <div>
-          <button onClick={() => setShowChat(true)} style={buttonStyle}>Para Yatır</button>
-          <button onClick={() => setShowChat(true)} style={buttonStyle}>Para Çek</button>
-          <button onClick={handleLogout} style={{ ...buttonStyle, background: '#f00' }}>Çıkış</button>
+          <button onClick={() => setChatVisible(true)}>Para Yatır</button>
+          <button onClick={() => setChatVisible(true)} style={{ marginLeft: 10 }}>Para Çek</button>
+          <button onClick={handleLogout} style={{ marginLeft: 10 }}>Çıkış</button>
         </div>
       </div>
 
-      {/* Başlık */}
-      <h1 style={{ textAlign: 'center', marginTop: 100 }}>Okey Cini'ne Hoş Geldiniz</h1>
+      {/* Hoş geldiniz */}
+      <h1 style={{ textAlign: 'center', marginTop: 40, fontSize: '2rem' }}>Okey Cini'ne Hoş Geldiniz</h1>
 
-      {/* Şerit */}
-      <div style={{ position: 'absolute', top: 70, left: 0, width: '100%', textAlign: 'center', fontWeight: 'bold', background: '#0008', padding: 10 }}>
-        {ticker}
+      {/* Kazananlar Şeridi */}
+      <div style={{
+        margin: '20px auto',
+        padding: '10px',
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        fontSize: '1.2rem',
+        animation: 'tickerMove 10s linear infinite',
+        border: '2px solid gold',
+        textAlign: 'center'
+      }}>
+        <span style={{ color: '#FFD700', fontWeight: 'bold' }}>{ticker}</span>
       </div>
 
-      {/* Sohbet Kutusu */}
-      {showChat && (
+      {/* Neden Bizi Seçmelisiniz */}
+      <div style={{ marginTop: 60, display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '1rem' }}>
+        {[
+          '✅ 7/24 canlı destek ve güvenli para işlemleri',
+          '✅ Gerçek zamanlı oyun keyfi ve yüksek kazanç fırsatları',
+          '✅ Modern arayüz, kolay kullanım ve zengin oyun çeşitliliği'
+        ].map((text, i) => (
+          <div key={i} style={{ background: 'rgba(255,255,255,0.85)', color: '#000', padding: '1rem', borderRadius: '12px', minWidth: 250 }}>
+            {text}
+          </div>
+        ))}
+      </div>
+
+      {/* Canlı Mesaj Kutucuğu */}
+      {chatVisible && (
         <div style={{
           position: 'fixed',
-          bottom: 20,
+          bottom: 80,
           right: 20,
+          background: 'white',
+          color: 'black',
+          padding: '1rem',
+          borderRadius: '12px',
           width: 300,
-          background: '#000c',
-          padding: 10,
-          borderRadius: 8,
+          zIndex: 999
         }}>
-          <h4>Canlı Destek</h4>
-          <div style={{ maxHeight: 150, overflowY: 'auto', marginBottom: 10 }}>
-            {messages.map((msg, idx) => <p key={idx}>{msg}</p>)}
-          </div>
-          <input
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Mesaj yaz..."
-            style={{ width: '100%', padding: 6, marginBottom: 6 }}
-          />
-          <button onClick={handleSendMessage} style={buttonStyle}>Gönder</button>
+          <strong>Canlı Destek</strong>
+          <p style={{ fontSize: '0.9rem', marginTop: 10 }}>Müşteri temsilcilerimiz şu anda meşgul, en kısa sürede size dönüş yapılacaktır.</p>
         </div>
       )}
 
-      {/* Neden Biz? */}
-      <div style={{
-        position: 'absolute',
-        bottom: 20,
-        left: 20,
-        width: '60%',
-        background: '#0008',
-        padding: 20,
-        borderRadius: 12,
-      }}>
-        <h3>Neden Bizi Seçmelisiniz?</h3>
-        <ul>
-          <li>✅ 7/24 canlı destek ve güvenli para işlemleri</li>
-          <li>✅ Gerçek zamanlı oyun keyfi ve yüksek kazanç fırsatları</li>
-          <li>✅ Modern arayüz, kolay kullanım ve zengin oyun çeşitliliği</li>
-        </ul>
-      </div>
+      {/* Sabit Baloncuk */}
+      <button
+        onClick={() => setChatVisible(!chatVisible)}
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          background: '#FFD700',
+          border: 'none',
+          padding: '0.8rem 1rem',
+          borderRadius: '50%',
+          cursor: 'pointer',
+          zIndex: 1000,
+          boxShadow: '0 0 10px black'
+        }}>
+        💬
+      </button>
+
+      <style>{`
+        @keyframes tickerMove {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+      `}</style>
     </div>
   );
 }
-
-const buttonStyle = {
-  marginLeft: 10,
-  padding: '6px 12px',
-  background: '#0070f3',
-  border: 'none',
-  borderRadius: 6,
-  color: 'white',
-  cursor: 'pointer',
-};
