@@ -58,8 +58,18 @@ export default function HomePage() {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#f3f3f3' }}>
-      <div style={{ background: '#fff', padding: 30, borderRadius: 12, boxShadow: '0 0 15px rgba(0,0,0,0.1)', width: 400 }}>
+    <div
+      style={{
+        backgroundImage: "url('/casino-bg.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ background: '#fff', padding: 30, borderRadius: 12, boxShadow: '0 0 15px rgba(0,0,0,0.2)', width: 400 }}>
         <h2 style={{ textAlign: 'center' }}>{isRegistering ? 'Kayıt Ol' : 'Giriş Yap'}</h2>
         <form onSubmit={handleSubmit}>
           {isRegistering && (
