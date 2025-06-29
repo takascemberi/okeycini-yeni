@@ -86,48 +86,52 @@ export default function HomePage() {
         🎰 Okey Cini'ne Hoş Geldiniz 🎰
       </h1>
 
-      {/* Neden Bizi Seçmelisiniz Başlığı */}
-      <h2 style={{
-        textAlign: 'center',
-        fontSize: '2rem',
-        color: '#fff',
-        marginBottom: '1rem',
-        marginTop: '5rem',
-        animation: 'pulse 2s infinite'
-      }}>
-        ✨ Neden Bizi Seçmelisiniz? ✨
-      </h2>
-      <style>{`
-        @keyframes pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-          100% { transform: scale(1); }
-        }
-      `}</style>
+      {/* Footer - Neden Bizi Seçmelisiniz */}  
+<div style={{
+  marginTop: '5rem',
+  paddingTop: '3rem',
+  paddingBottom: '3rem',
+  backgroundColor: 'rgba(0,0,0,0.6)',
+  borderTop: '2px solid #ffc107',
+  textAlign: 'center'
+}}>
+  <h2 style={{
+    fontSize: '2rem',
+    color: '#fff',
+    animation: 'pulse 2s infinite',
+    marginBottom: '2rem'
+  }}>
+    ✨ Neden Bizi Seçmelisiniz? ✨
+  </h2>
+  <style>{`
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  `}</style>
 
-      {/* Avantaj Kutuları */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexWrap: 'wrap',
-        gap: '1.5rem',
-        marginTop: '2rem',
-        paddingBottom: '3rem',
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    gap: '1.5rem',
+  }}>
+    {[
+      '7/24 canlı destek ve güvenli para işlemleri',
+      'Gerçek zamanlı oyun keyfi ve yüksek kazanç fırsatları',
+      'Modern arayüz, kolay kullanım ve zengin oyun çeşitliliği',
+    ].map((item, index) => (
+      <div key={index} style={{
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        padding: '1.5rem',
+        borderRadius: '12px',
+        width: '300px',
+        textAlign: 'center',
+        boxShadow: '0 0 12px rgba(0,0,0,0.3)',
+        fontWeight: 'bold',
+        color: '#fff'
       }}>
-        {[
-          '7/24 canlı destek ve güvenli para işlemleri',
-          'Gerçek zamanlı oyun keyfi ve yüksek kazanç fırsatları',
-          'Modern arayüz, kolay kullanım ve zengin oyun çeşitliliği',
-        ].map((item, index) => (
-          <div key={index} style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            padding: '1.5rem',
-            borderRadius: '12px',
-            width: '300px',
-            textAlign: 'center',
-            boxShadow: '0 0 12px rgba(0,0,0,0.3)',
-            fontWeight: 'bold'
-          }}>
             {item}
           </div>
         ))}
