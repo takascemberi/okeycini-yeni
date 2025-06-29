@@ -182,9 +182,23 @@ export default function HomePage() {
           zIndex: 1000
         }}>
           <div style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '1rem' }}>
-            {mesajlar.map((mesaj, i) => (
-              <p key={i} style={{ margin: '0.25rem 0' }}>{mesaj}</p>
-            ))}
+            {mesajlar.map((mesaj, i) => {
+              const isAdmin = mesaj.startsWith('Admin');
+              return (
+                <div key={i} style={{
+                  backgroundColor: isAdmin ? '#4CAF50' : '#e0e0e0',
+                  color: isAdmin ? 'white' : 'black',
+                  borderRadius: '15px',
+                  padding: '10px 15px',
+                  margin: '5px 0',
+                  maxWidth: '80%',
+                  alignSelf: isAdmin ? 'flex-start' : 'flex-end',
+                  boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)',
+                }}>
+                  {mesaj}
+                </div>
+              );
+            })}
           </div>
           <input
             type="text"
