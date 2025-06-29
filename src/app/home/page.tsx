@@ -7,6 +7,10 @@ export default function HomePage() {
   const router = useRouter();
   const [kazananMesaji, setKazananMesaji] = useState('');
   const [canliDestekGorunur, setCanliDestekGorunur] = useState(false);
+  const [mesajlar, setMesajlar] = useState<string[]>([
+    'Sistem: Müşteri temsilcilerimiz şu anda meşgul, en kısa sürede size dönüş yapılacaktır.'
+  ]);
+  const [yeniMesaj, setYeniMesaj] = useState('');
 
   const kazananlar = [
     'Abdullah 14024 TL kazandı', 'Amina 15872 TL kazandı', 'Boris 18485 TL kazandı', 'Dimitri 19695 TL kazandı',
@@ -28,25 +32,32 @@ export default function HomePage() {
       setKazananMesaji(rastgele);
     };
     yenile();
-    const interval = setInterval(yenile, 180000); // 3 dakikada bir
+    const interval = setInterval(yenile, 180000);
     return () => clearInterval(interval);
   }, []);
 
+  const mesajGonder = () => {
+    if (yeniMesaj.trim() !== '') {
+      setMesajlar([...mesajlar, 'Siz: ' + yeniMesaj]);
+      setYeniMesaj('');
+      setTimeout(() => {
+        setMesajlar(prev => [...prev, 'Admin: Talebiniz alınmıştır, birazdan dönüş yapılacaktır.']);
+      }, 2000);
+    }
+  };
+
   return (
-    <div
-      style={{
-        backgroundImage: 'url(/lobi.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '100vh',
-        padding: '1rem',
-        position: 'relative',
-        color: 'white',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
-    >
-      {/* Kayan Yazı */}
+    <div style={{
+      backgroundImage: 'url(/lobi.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      minHeight: '100vh',
+      padding: '1rem',
+      position: 'relative',
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
       <div style={{
         background: 'linear-gradient(to right, #ffeb3b, #ffc107, #ffeb3b)',
         color: 'black',
@@ -69,28 +80,24 @@ export default function HomePage() {
         🎉 {kazananMesaji}
       </div>
 
-      {/* Üst sağ butonlar */}
       <div style={{ position: 'absolute', top: 10, right: 10, display: 'flex', gap: '1rem' }}>
+        <button onClick={() => setCanliDestekGorunur(true)} style={buttonStyle}>Para Yatır</button>
+        <button onClick={() => setCanliDestekGorunur(true)} style={buttonStyle}>Para Çek</button>
         <button onClick={() => router.push('/logout')} style={buttonStyle}>Çıkış</button>
-        <button onClick={() => router.push('/deposit')} style={buttonStyle}>Para Yatır</button>
-        <button onClick={() => router.push('/withdraw')} style={buttonStyle}>Para Çek</button>
       </div>
 
-      {/* Üst sol profil */}
       <div style={{ position: 'absolute', top: 10, left: 10 }}>
         <button onClick={() => router.push('/profile')} style={buttonStyle}>
           👤 Profil (Mevcut Bakiye: 7600 TL)
         </button>
       </div>
 
-      {/* Ortadaki karşılama metni */}
       <h1 style={{ textAlign: 'center', marginTop: '5rem', fontSize: '2.5rem' }}>
         🎰 Okey Cini'ne Hoş Geldiniz 🎰
       </h1>
 
       <div style={{ flexGrow: 1 }}></div>
 
-      {/* Footer - Neden Bizi Seçmelisiniz */}  
       <div style={{
         marginTop: '5rem',
         paddingTop: '3rem',
@@ -142,7 +149,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Canlı Destek Sabit Buton */}
       <div
         onClick={() => setCanliDestekGorunur(!canliDestekGorunur)}
         style={{
@@ -162,7 +168,6 @@ export default function HomePage() {
         💬 Canlı Destek
       </div>
 
-      {/* Canlı Destek Kutusu */}
       {canliDestekGorunur && (
         <div style={{
           position: 'fixed',
@@ -176,14 +181,25 @@ export default function HomePage() {
           boxShadow: '0 0 15px rgba(0,0,0,0.4)',
           zIndex: 1000
         }}>
-          <p><strong>Sistem:</strong> Müşteri temsilcilerimiz şu anda meşgul, en kısa sürede size dönüş yapılacaktır.</p>
+          <div style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '1rem' }}>
+            {mesajlar.map((mesaj, i) => (
+              <p key={i} style={{ margin: '0.25rem 0' }}>{mesaj}</p>
+            ))}
+          </div>
+          <input
+            type="text"
+            value={yeniMesaj}
+            onChange={(e) => setYeniMesaj(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && mesajGonder()}
+            placeholder="Mesajınızı yazın..."
+            style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
+          />
         </div>
       )}
     </div>
   );
 }
 
-// Ortak buton stili
 const buttonStyle: React.CSSProperties = {
   backgroundColor: '#ffcc00',
   color: '#000',

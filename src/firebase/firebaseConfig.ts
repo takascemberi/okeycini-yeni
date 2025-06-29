@@ -1,15 +1,19 @@
-// src/firebase/firebaseConfig.ts
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAFX7BWtHyr5nmV0rj36RgQz41qJ2NyRLo",
-  authDomain: "okeycini-ea22e.firebaseapp.com",
-  projectId: "okeycini-ea22e",
-  storageBucket: "okeycini-ea22e.appspot.com", // ✅ DÜZELTİLDİ
-  messagingSenderId: "102049886702",
-  appId: "1:102049886702:web:befef059dfd2086d375eff",
+  apiKey: 'AIzaSyCbPwJfUagbCa_QjSdhhCbhqaODEy6l4Hs',
+  authDomain: 'okeycini-ca604.firebaseapp.com',
+  projectId: 'okeycini-ca604',
+  storageBucket: 'okeycini-ca604.appspot.com',
+  messagingSenderId: '22354367058',
+  appId: '1:22354367058:web:63f7dda0b5aed05302458b',
+  measurementId: 'G-ZM74BBQTYH',
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
+
+export { auth, storage };
