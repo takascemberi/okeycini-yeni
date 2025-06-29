@@ -1,32 +1,34 @@
-// src/app/home/page.tsx
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
-
-const kazananlarListesi = [
-  'Ayşe 15.000 TL kazandı',
-  'Irina 17.000 TL kazandı',
-  'Ahmet 12.000 TL kazandı',
-  'Yannis 19.000 TL kazandı',
-  'Mustafa 14.500 TL kazandı',
-  'Elena 13.200 TL kazandı',
-  'Dimitri 20.000 TL kazandı',
-  'Ali 18.750 TL kazandı',
-  'Murat 16.000 TL kazandı',
-  'Svetlana 19.500 TL kazandı'
-];
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
+  const router = useRouter();
   const [kazananMesaji, setKazananMesaji] = useState('');
+  const [canliDestekGorunur, setCanliDestekGorunur] = useState(false);
+
+  const kazananlar = [
+    'Abdullah 14024 TL kazandı', 'Amina 15872 TL kazandı', 'Boris 18485 TL kazandı', 'Dimitri 19695 TL kazandı',
+    'Elena 15889 TL kazandı', 'Fatima 6950 TL kazandı', 'Georgios 5652 TL kazandı', 'Hüseyin 10779 TL kazandı',
+    'Irina 17469 TL kazandı', 'Jessica 15797 TL kazandı', 'Khalid 11363 TL kazandı', 'Layla 16678 TL kazandı',
+    'Mehmet 12504 TL kazandı', 'Mustafa 19670 TL kazandı', 'Nikos 6452 TL kazandı', 'Olga 6667 TL kazandı',
+    'Paul 15228 TL kazandı', 'Robert 9636 TL kazandı', 'Sarah 12983 TL kazandı', 'Tatiana 7813 TL kazandı',
+    'William 19837 TL kazandı', 'Yannis 7741 TL kazandı', 'Zainab 12573 TL kazandı', 'Zeynep 10760 TL kazandı',
+    'Omar 13120 TL kazandı', 'Yusuf 13348 TL kazandı', 'Finn 5234 TL kazandı', 'Ivan 9811 TL kazandı',
+    'Emily 16808 TL kazandı', 'Leon 6704 TL kazandı', 'John 5677 TL kazandı', 'Emma 18182 TL kazandı',
+    'Christos 19491 TL kazandı', 'Linda 12841 TL kazandı', 'Lukas 7511 TL kazandı', 'Maria 14208 TL kazandı',
+    'Mia 10466 TL kazandı', 'Mikhail 17088 TL kazandı', 'Nikolai 5115 TL kazandı', 'Panagiota 13306 TL kazandı',
+    'Ali 15145 TL kazandı', 'Ahmet 17305 TL kazandı'
+  ];
 
   useEffect(() => {
-    const guncelle = () => {
-      const rastgele = kazananlarListesi[Math.floor(Math.random() * kazananlarListesi.length)];
+    const yenile = () => {
+      const rastgele = kazananlar[Math.floor(Math.random() * kazananlar.length)];
       setKazananMesaji(rastgele);
     };
-    guncelle();
-    const interval = setInterval(guncelle, 180000); // 3 dakikada bir
+    yenile();
+    const interval = setInterval(yenile, 180000); // 3 dakikada bir
     return () => clearInterval(interval);
   }, []);
 
@@ -37,82 +39,103 @@ export default function HomePage() {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',
-        color: 'white',
         padding: '1rem',
-        position: 'relative'
+        position: 'relative',
+        color: 'white',
       }}
     >
-      {/* Kayan kazanan yazısı */}
-      <div
-        style={{
-          backgroundColor: 'rgba(0,0,0,0.6)',
-          padding: '0.5rem',
-          marginBottom: '1rem',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          animation: 'marquee 15s linear infinite',
-          borderRadius: '12px'
-        }}
-      >
+      {/* Kayan Yazı */}
+      <div style={{
+        background: 'linear-gradient(to right, #ffeb3b, #ffc107, #ffeb3b)',
+        color: 'black',
+        padding: '0.5rem 1rem',
+        borderRadius: '10px',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        animation: 'marquee 12s linear infinite',
+        marginBottom: '1rem',
+        textShadow: '0 0 5px white',
+        fontWeight: 'bold',
+        fontSize: '1rem',
+      }}>
         <style>{`
           @keyframes marquee {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
           }
         `}</style>
-        <span>{kazananMesaji}</span>
+        🎉 {kazananMesaji}
       </div>
 
       {/* Üst sağ butonlar */}
       <div style={{ position: 'absolute', top: 10, right: 10, display: 'flex', gap: '1rem' }}>
-        <button style={buttonStyle}>Çıkış</button>
-        <button style={buttonStyle}>Para Yatır</button>
-        <button style={buttonStyle}>Para Çek</button>
+        <button onClick={() => router.push('/logout')} style={buttonStyle}>Çıkış</button>
+        <button onClick={() => router.push('/deposit')} style={buttonStyle}>Para Yatır</button>
+        <button onClick={() => router.push('/withdraw')} style={buttonStyle}>Para Çek</button>
       </div>
 
       {/* Üst sol profil */}
       <div style={{ position: 'absolute', top: 10, left: 10 }}>
-        <button style={buttonStyle}>👤 Profil (Mevcut Bakiye: 7600 TL)</button>
+        <button onClick={() => router.push('/profile')} style={buttonStyle}>
+          👤 Profil (Mevcut Bakiye: 7600 TL)
+        </button>
       </div>
 
-      {/* Orta karşılama yazısı */}
-      <h1 style={{ textAlign: 'center', marginTop: '5rem', fontSize: '2rem' }}>🎉 Okey Cini'ne Hoş Geldiniz 🎉</h1>
+      {/* Ortadaki karşılama metni */}
+      <h1 style={{ textAlign: 'center', marginTop: '5rem', fontSize: '2.5rem' }}>
+        🎰 Okey Cini'ne Hoş Geldiniz 🎰
+      </h1>
 
-      {/* "Neden bizi seçmelisiniz?" kutuları */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '2rem',
-          marginTop: '3rem',
-          flexWrap: 'wrap',
-          textAlign: 'center'
-        }}
-      >
+      {/* Neden Bizi Seçmelisiniz Başlığı */}
+      <h2 style={{
+        textAlign: 'center',
+        fontSize: '2rem',
+        color: '#fff',
+        marginBottom: '1rem',
+        marginTop: '5rem',
+        animation: 'pulse 2s infinite'
+      }}>
+        ✨ Neden Bizi Seçmelisiniz? ✨
+      </h2>
+      <style>{`
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+      `}</style>
+
+      {/* Avantaj Kutuları */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        gap: '1.5rem',
+        marginTop: '2rem',
+        paddingBottom: '3rem',
+      }}>
         {[
           '7/24 canlı destek ve güvenli para işlemleri',
           'Gerçek zamanlı oyun keyfi ve yüksek kazanç fırsatları',
-          'Modern arayüz, kolay kullanım ve zengin oyun çeşitliliği'
-        ].map((neden, i) => (
-          <div
-            key={i}
-            style={{
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              padding: '1rem',
-              borderRadius: '12px',
-              width: '250px',
-              boxShadow: '0 0 10px rgba(0,0,0,0.3)',
-              marginBottom: '2rem'
-            }}
-          >
-            {neden}
+          'Modern arayüz, kolay kullanım ve zengin oyun çeşitliliği',
+        ].map((item, index) => (
+          <div key={index} style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            padding: '1.5rem',
+            borderRadius: '12px',
+            width: '300px',
+            textAlign: 'center',
+            boxShadow: '0 0 12px rgba(0,0,0,0.3)',
+            fontWeight: 'bold'
+          }}>
+            {item}
           </div>
         ))}
       </div>
 
-      {/* Sabit sağ alt köşede canlı destek mesaj baloncuğu */}
+      {/* Canlı Destek Sabit Buton */}
       <div
+        onClick={() => setCanliDestekGorunur(!canliDestekGorunur)}
         style={{
           position: 'fixed',
           bottom: '20px',
@@ -123,25 +146,44 @@ export default function HomePage() {
           borderRadius: '999px',
           boxShadow: '0 0 10px rgba(0,0,0,0.5)',
           zIndex: 999,
-          cursor: 'pointer'
+          cursor: 'pointer',
+          fontWeight: 'bold'
         }}
       >
         💬 Canlı Destek
       </div>
+
+      {/* Canlı Destek Kutusu */}
+      {canliDestekGorunur && (
+        <div style={{
+          position: 'fixed',
+          bottom: '80px',
+          right: '20px',
+          width: '300px',
+          backgroundColor: 'white',
+          color: 'black',
+          padding: '1rem',
+          borderRadius: '10px',
+          boxShadow: '0 0 15px rgba(0,0,0,0.4)',
+          zIndex: 1000
+        }}>
+          <p><strong>Sistem:</strong> Müşteri temsilcilerimiz şu anda meşgul, en kısa sürede size dönüş yapılacaktır.</p>
+        </div>
+      )}
     </div>
   );
 }
 
-// Button Style
-const buttonStyle = {
+// Ortak buton stili (hover ile)
+const buttonStyle: React.CSSProperties = {
   backgroundColor: '#ffcc00',
   color: '#000',
   border: 'none',
-  padding: '0.75rem 1.5rem',
+  padding: '0.5rem 1rem',
   borderRadius: '8px',
   cursor: 'pointer',
-  fontSize: '16px',
-  boxShadow: '0 0 10px rgba(0,0,0,0.5)',
-  transition: 'background-color 0.3s',
-  fontWeight: 'bold'
-};
+  fontSize: '14px',
+  fontWeight: 'bold',
+  boxShadow: '0 0 6px rgba(0,0,0,0.3)',
+  transition: '0.3s',
+} as React.CSSProperties;
