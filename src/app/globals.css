@@ -1,10 +1,86 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  background-image: url('/casino-bg.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  min-height: 100vh;
+/* Genel Buton Stili */
+button {
+  background-color: #ffcc00; /* Altın sarısı */
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px; /* Yuvarlak butonlar */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Animasyon */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Buton Hover Efekti */
+button:hover {
+  background-color: #f57c00; /* Hoverda koyu turuncu */
+  transform: scale(1.05);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Hoverda daha büyük gölge */
+}
+
+/* Canlı Destek Butonu */
+#canliDestekButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #00c853; /* Canlı yeşil */
+  color: white;
+  font-size: 18px;
+  border-radius: 50px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Canlı Destek Butonu Hover */
+#canliDestekButton:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Neden Bizi Seçmelisiniz Kutu */
+.selection-box {
+  background: linear-gradient(135deg, rgba(255, 223, 0, 0.5), rgba(255, 255, 255, 0.5)); /* Yumuşak renk geçişi */
+  color: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Kutu Hover Efekti */
+.selection-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Animasyonlu Yazı (Pulse) */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.selection-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.selection-item {
+  font-size: 1.1rem;
+  font-weight: normal;
+  margin: 0.5rem 0;
+}
+
+/* Kutu İçindeki Metin */
+.selection-box p {
+  font-size: 1rem;
+  font-weight: normal;
+  color: #fff;
 }
