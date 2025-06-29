@@ -141,9 +141,18 @@ export default function HomePage() {
               textAlign: 'center',
               boxShadow: '0 0 12px rgba(0,0,0,0.3)',
               fontWeight: 'bold',
-              color: '#fff'
+              color: '#fff',
+              transition: 'transform 0.3s ease, background-color 0.3s ease',
             }}>
-              {item}
+              <div style={{
+                borderRadius: '8px',
+                padding: '1rem',
+                background: 'rgba(255, 255, 255, 0.2)',
+                fontSize: '1.1rem',
+                boxShadow: '0 0 10px rgba(0,0,0,0.2)',
+              }}>
+                {item}
+              </div>
             </div>
           ))}
         </div>
