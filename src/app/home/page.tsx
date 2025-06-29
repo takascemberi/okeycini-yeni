@@ -42,6 +42,8 @@ export default function HomePage() {
         padding: '1rem',
         position: 'relative',
         color: 'white',
+        display: 'flex',
+        flexDirection: 'column'
       }}
     >
       {/* Kayan Yazı */}
@@ -86,55 +88,58 @@ export default function HomePage() {
         🎰 Okey Cini'ne Hoş Geldiniz 🎰
       </h1>
 
-      {/* Footer - Neden Bizi Seçmelisiniz */}  
-<div style={{
-  marginTop: '5rem',
-  paddingTop: '3rem',
-  paddingBottom: '3rem',
-  backgroundColor: 'rgba(0,0,0,0.6)',
-  borderTop: '2px solid #ffc107',
-  textAlign: 'center'
-}}>
-  <h2 style={{
-    fontSize: '2rem',
-    color: '#fff',
-    animation: 'pulse 2s infinite',
-    marginBottom: '2rem'
-  }}>
-    ✨ Neden Bizi Seçmelisiniz? ✨
-  </h2>
-  <style>{`
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-  `}</style>
+      <div style={{ flexGrow: 1 }}></div>
 
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    gap: '1.5rem',
-  }}>
-    {[
-      '7/24 canlı destek ve güvenli para işlemleri',
-      'Gerçek zamanlı oyun keyfi ve yüksek kazanç fırsatları',
-      'Modern arayüz, kolay kullanım ve zengin oyun çeşitliliği',
-    ].map((item, index) => (
-      <div key={index} style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        padding: '1.5rem',
-        borderRadius: '12px',
-        width: '300px',
-        textAlign: 'center',
-        boxShadow: '0 0 12px rgba(0,0,0,0.3)',
-        fontWeight: 'bold',
-        color: '#fff'
+      {/* Footer - Neden Bizi Seçmelisiniz */}  
+      <div style={{
+        marginTop: '5rem',
+        paddingTop: '3rem',
+        paddingBottom: '3rem',
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        borderTop: '2px solid #ffc107',
+        textAlign: 'center'
       }}>
-            {item}
-          </div>
-        ))}
+        <h2 style={{
+          fontSize: '2rem',
+          color: '#fff',
+          animation: 'pulse 2s infinite',
+          marginBottom: '2rem'
+        }}>
+          ✨ Neden Bizi Seçmelisiniz? ✨
+        </h2>
+        <style>{`
+          @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+          }
+        `}</style>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          gap: '1.5rem',
+        }}>
+          {[
+            '7/24 canlı destek ve güvenli para işlemleri',
+            'Gerçek zamanlı oyun keyfi ve yüksek kazanç fırsatları',
+            'Modern arayüz, kolay kullanım ve zengin oyun çeşitliliği',
+          ].map((item, index) => (
+            <div key={index} style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              width: '300px',
+              textAlign: 'center',
+              boxShadow: '0 0 12px rgba(0,0,0,0.3)',
+              fontWeight: 'bold',
+              color: '#fff'
+            }}>
+              {item}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Canlı Destek Sabit Buton */}
@@ -178,7 +183,7 @@ export default function HomePage() {
   );
 }
 
-// Ortak buton stili (hover ile)
+// Ortak buton stili
 const buttonStyle: React.CSSProperties = {
   backgroundColor: '#ffcc00',
   color: '#000',
@@ -190,4 +195,4 @@ const buttonStyle: React.CSSProperties = {
   fontWeight: 'bold',
   boxShadow: '0 0 6px rgba(0,0,0,0.3)',
   transition: '0.3s',
-} as React.CSSProperties;
+};
