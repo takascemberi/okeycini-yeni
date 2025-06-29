@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function HomePage() {
   const router = useRouter();
@@ -46,6 +47,14 @@ export default function HomePage() {
     }
   };
 
+  const oyunlar = [
+    { ad: '🎰 Büyülü Slot', image: '/slot.png', link: '/magical-slot' },
+    { ad: '🎲 Barbut', image: '/barbut.png', link: '/barbut' },
+    { ad: '🀄 101 Okey', image: '/101.png', link: '/okey-101' },
+    { ad: '🀄 Klasik Okey', image: '/klasikokey.png', link: '/klasik-okey' },
+    { ad: '🎡 Rulet', image: '/rulet.png', link: '/rulet' }
+  ];
+
   return (
     <div style={{
       backgroundImage: 'url(/lobi.png)',
@@ -58,6 +67,19 @@ export default function HomePage() {
       display: 'flex',
       flexDirection: 'column'
     }}>
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+      `}</style>
+
+      {/* Kayan Kazanan Mesajı */}
       <div style={{
         background: 'linear-gradient(to right, #ffeb3b, #ffc107, #ffeb3b)',
         color: 'black',
@@ -67,37 +89,62 @@ export default function HomePage() {
         overflow: 'hidden',
         animation: 'marquee 12s linear infinite',
         marginBottom: '1rem',
-        textShadow: '0 0 5px white',
         fontWeight: 'bold',
-        fontSize: '1rem',
+        textShadow: '0 0 5px white'
       }}>
-        <style>{`
-          @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-          }
-        `}</style>
         🎉 {kazananMesaji}
       </div>
 
+      {/* Butonlar */}
       <div style={{ position: 'absolute', top: 10, right: 10, display: 'flex', gap: '1rem' }}>
         <button onClick={() => setCanliDestekGorunur(true)} style={buttonStyle}>Para Yatır</button>
         <button onClick={() => setCanliDestekGorunur(true)} style={buttonStyle}>Para Çek</button>
         <button onClick={() => router.push('/logout')} style={buttonStyle}>Çıkış</button>
       </div>
 
+      {/* Profil */}
       <div style={{ position: 'absolute', top: 10, left: 10 }}>
         <button onClick={() => router.push('/profile')} style={buttonStyle}>
           👤 Profil (Mevcut Bakiye: 7600 TL)
         </button>
       </div>
 
+      {/* Başlık */}
       <h1 style={{ textAlign: 'center', marginTop: '5rem', fontSize: '2.5rem' }}>
         🎰 Okey Cini'ne Hoş Geldiniz 🎰
       </h1>
 
-      <div style={{ flexGrow: 1 }}></div>
+      {/* Oyun Kartları */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2rem', marginTop: '3rem' }}>
+        {oyunlar.map((oyun, i) => (
+          <div
+            key={i}
+            onClick={() => router.push(oyun.link)}
+            style={{
+              cursor: 'pointer',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              width: '300px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+              transition: 'transform 0.3s ease',
+              backgroundColor: 'rgba(255,255,255,0.05)',
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)';
+            }}
+          >
+            <Image src={oyun.image} alt={oyun.ad} width={300} height={200} style={{ objectFit: 'cover' }} />
+            <div style={{ padding: '1rem', textAlign: 'center', color: 'white', fontWeight: 'bold' }}>
+              {oyun.ad}
+            </div>
+          </div>
+        ))}
+      </div>
 
+      {/* Neden Bizi Seçmelisiniz */}
       <div style={{
         marginTop: '5rem',
         paddingTop: '3rem',
@@ -106,22 +153,9 @@ export default function HomePage() {
         borderTop: '2px solid #ffc107',
         textAlign: 'center'
       }}>
-        <h2 style={{
-          fontSize: '2rem',
-          color: '#fff',
-          animation: 'pulse 2s infinite',
-          marginBottom: '2rem'
-        }}>
+        <h2 style={{ fontSize: '2rem', color: '#fff', animation: 'pulse 2s infinite', marginBottom: '2rem' }}>
           ✨ Neden Bizi Seçmelisiniz? ✨
         </h2>
-        <style>{`
-          @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-          }
-        `}</style>
-
         <div style={{
           display: 'flex',
           justifyContent: 'center',
@@ -138,26 +172,16 @@ export default function HomePage() {
               padding: '1.5rem',
               borderRadius: '12px',
               width: '300px',
-              textAlign: 'center',
-              boxShadow: '0 0 12px rgba(0,0,0,0.3)',
               fontWeight: 'bold',
-              color: '#fff',
-              transition: 'transform 0.3s ease, background-color 0.3s ease',
+              color: '#fff'
             }}>
-              <div style={{
-                borderRadius: '8px',
-                padding: '1rem',
-                background: 'rgba(255, 255, 255, 0.2)',
-                fontSize: '1.1rem',
-                boxShadow: '0 0 10px rgba(0,0,0,0.2)',
-              }}>
-                {item}
-              </div>
+              {item}
             </div>
           ))}
         </div>
       </div>
 
+      {/* Canlı destek balonu */}
       <div
         onClick={() => setCanliDestekGorunur(!canliDestekGorunur)}
         style={{
@@ -200,8 +224,6 @@ export default function HomePage() {
                   borderRadius: '15px',
                   padding: '10px 15px',
                   margin: '5px 0',
-                  maxWidth: '80%',
-                  alignSelf: isAdmin ? 'flex-start' : 'flex-end',
                   boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)',
                 }}>
                   {mesaj}
