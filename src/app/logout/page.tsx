@@ -12,7 +12,7 @@ export default function LogoutPage() {
     const çıkışYap = async () => {
       try {
         await signOut(auth);
-        router.push('/login');
+        router.push('/login'); // Giriş sayfasına yönlendirme
       } catch (error) {
         console.error('Çıkış hatası:', error);
       }
@@ -22,7 +22,19 @@ export default function LogoutPage() {
   }, [router]);
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '5rem', color: 'white' }}>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      backgroundImage: 'url(/lobi.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      color: 'white',
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      textShadow: '0 0 5px black'
+    }}>
       Çıkış yapılıyor...
     </div>
   );
