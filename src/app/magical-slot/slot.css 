@@ -1,0 +1,56 @@
+.slot-container {
+  background-image: url('/magical-slot-board.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  color: white;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 80px);
+  gap: 10px;
+  justify-content: center;
+  margin: 2rem auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 1rem;
+  border-radius: 10px;
+  width: max-content;
+}
+
+.slot-box {
+  width: 80px;
+  height: 80px;
+  font-size: 2rem;
+  background-color: #fff;
+  color: #000;
+  border-radius: 10px;
+  box-shadow: 0 0 8px black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: transform 0.3s;
+}
+
+.spin-button {
+  background-color: gold;
+  color: black;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 10px black;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+.slot-message {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #ffeb3b;
+}
