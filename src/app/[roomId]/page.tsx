@@ -1,21 +1,14 @@
-// src/app/[roomId]/page.tsx
+'use client';
 
-type PageProps = {
-  params: {
-    roomId: string;
-  };
-};
+import { useParams } from 'next/navigation';
 
-export default async function Page({ params }: PageProps) {
-  const { roomId } = params;
-
-  // Burada async işlemler yapabilirsin, örnek:
-  // const data = await fetch(...);
+export default function RoomPage() {
+  const { roomId } = useParams();
 
   return (
-    <main>
-      <h1>Oda ID'si: {roomId}</h1>
-      {/* Diğer içerikler buraya */}
-    </main>
+    <div style={{ padding: 20 }}>
+      <h1>Welcome to Room: {roomId}</h1>
+      <p>This is Ozkan&apos;s dynamic game room page.</p>
+    </div>
   );
 }
