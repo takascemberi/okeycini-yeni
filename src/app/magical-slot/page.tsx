@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import './slot.css'; // Stilleri ayırdık (aşağıda vereceğim)
+import React, { useState } from 'react';
+import './slot.css'; // Stilleri buradan yüklüyoruz
 
-const SYMBOLS = ['🍒', '🔔', '💎', '🍋', '⭐', '🧞']; // 🧞 özel sembol (Cin)
+const SYMBOLS = ['🍒', '🔔', '💎', '🍋', '⭐', '🧞']; // 6 farklı sembol – 🧞 özel sembol
 
 const getRandomSymbol = () => SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
 
