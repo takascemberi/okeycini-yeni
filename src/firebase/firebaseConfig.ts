@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
+import { getFirestore } from 'firebase/firestore';  // Firestore'u ekleyin
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCbPwJfUagbCa_QjSdhhCbhqaODEy6l4Hs',
@@ -15,5 +16,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const storage = getStorage(app);
+const db = getFirestore(app);  // Firestore bağlantısını ekleyin
 
-export { auth, storage };
+export { auth, storage, db };  // db'yi de dışa aktarın
