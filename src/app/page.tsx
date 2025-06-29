@@ -3,6 +3,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -12,6 +13,7 @@ import {
 import { auth } from '@/firebase/firebaseConfig';
 
 export default function HomePage() {
+  const router = useRouter();
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -38,6 +40,7 @@ export default function HomePage() {
       } else {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         setInfo('Giriş başarılı!');
+        router.push('/home'); // ✅ OTOMATİK YÖNLENDİRME BURADA
       }
     } catch (err: any) {
       setError(err.message);
