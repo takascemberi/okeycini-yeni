@@ -35,7 +35,7 @@ export default function LoginPage() {
         setInfo('Kayıt başarılı! Giriş yapabilirsiniz.');
         setIsRegistering(false);
       } catch (err: any) {
-        setError(err.message);
+        handleFirebaseError(err);
       }
     } else {
       try {
@@ -46,7 +46,7 @@ export default function LoginPage() {
         }
         setInfo('Giriş başarılı!');
       } catch (err: any) {
-        setError(err.message);
+        handleFirebaseError(err);
       }
     }
   };
@@ -60,8 +60,24 @@ export default function LoginPage() {
       await sendPasswordResetEmail(auth, email);
       setInfo('Şifre sıfırlama e-postası gönderildi.');
     } catch (err: any) {
-      setError(err.message);
+      handleFirebaseError(err);
     }
+  };
+
+  const handleFirebaseError = (err: any) => {
+    const code = err.code;
+
+    const errorMap: { [key: string]: string } = {
+      'auth/invalid-email': 'Geçersiz e-posta adresi.',
+      'auth/user-not-found': 'Kullanıcı bulunamadı.',
+      'auth/wrong-password': 'Kullanıcı adı veya şifre hatalı.',
+      'auth/email-already-in-use': 'Bu e-posta zaten kayıtlı.',
+      'auth/weak-password': 'Şifre çok zayıf. Lütfen daha güçlü bir şifre girin.',
+      'auth/missing-password': 'Lütfen şifre girin.',
+      'auth/invalid-credential': 'Kullanıcı adı veya şifre hatalı.',
+    };
+
+    setError(errorMap[code] || 'Bir hata oluştu. Lütfen tekrar deneyin.');
   };
 
   return (
@@ -108,14 +124,21 @@ export default function LoginPage() {
       </form>
 
       {!isRegistering && (
-        <button onClick={handleForgotPassword} style={{ marginTop: 10, background: 'none', border: 'none', color: 'blue', cursor: 'pointer' }}>
+        <button
+          onClick={handleForgotPassword}
+          style={{ marginTop: 10, background: 'none', border: 'none', color: 'blue', cursor: 'pointer' }}
+        >
           Şifremi Unuttum
         </button>
       )}
 
       <p style={{ marginTop: 10 }}>
         {isRegistering ? 'Zaten hesabın var mı?' : 'Hesabın yok mu?'}{' '}
-        <button type="button" onClick={() => setIsRegistering(!isRegistering)} style={{ color: 'blue', background: 'none', border: 'none', cursor: 'pointer' }}>
+        <button
+          type="button"
+          onClick={() => setIsRegistering(!isRegistering)}
+          style={{ color: 'blue', background: 'none', border: 'none', cursor: 'pointer' }}
+        >
           {isRegistering ? 'Giriş yap' : 'Kayıt ol'}
         </button>
       </p>
