@@ -1,11 +1,8 @@
-.slot-box {
+.slot-symbol {
   width: 64px;
   height: 64px;
-  background-image: url('/sprites/slot-symbols.png');
-  background-size: auto 64px;
-  ...
+  object-fit: contain;
+  border: none;
+  border-radius: 0;
+  display: block;
 }
-
-.symbol-0 { background-position: 0 0; }
-.symbol-1 { background-position: -64px 0; }
-/* ...diğerleri... */

@@ -1,149 +1,165 @@
+/* Yeni slot oyunu yapısına göre kodlar: 6x8 slot, meyve sembolleri, şık çerçeve, dropdown seçimi */
+
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './slot.css';
 
-const SYMBOL_COUNT = 6;
-const COLUMNS = 5;
-const VISIBLE_ROWS = 3;
-const SPIN_ROWS = 10;
+const SYMBOLS = [
+  'karpuz.png',
+  'kiraz.png',
+  'limon.png',
+  'yildiz.png',
+  'zil.png',
+  '7.png',
+  'armut.png',
+  'cin.png'
+];
 
-const generateColumn = () => {
-  const column = [];
-  for (let i = 0; i < SPIN_ROWS; i++) {
-    column.push(Math.floor(Math.random() * SYMBOL_COUNT));
-  }
-  return column;
-};
-
-const generateGrid = () => {
-  return Array.from({ length: COLUMNS }, () => generateColumn());
-};
-
-const playSound = (filename: string) => {
-  const audio = new Audio(`/sounds/${filename}`);
-  audio.play();
-};
+const getRandomSymbol = () => SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+const COLUMNS = 6;
+const ROWS = 8;
 
 export default function MagicalSlot() {
-  const [grid, setGrid] = useState(generateGrid());
+  const [grid, setGrid] = useState<string[][]>([]);
   const [spinning, setSpinning] = useState(false);
+  const [spinBet, setSpinBet] = useState(1);
+  const [freeSpinBet, setFreeSpinBet] = useState(100);
   const [balance, setBalance] = useState(1000);
   const [message, setMessage] = useState('');
-  const [bet, setBet] = useState(100);
-  const [freeSpinMode, setFreeSpinMode] = useState(false);
-  const [freeSpinResults, setFreeSpinResults] = useState<number[]>([]);
-  const [currentFreeSpin, setCurrentFreeSpin] = useState(0);
+  const [spinGain, setSpinGain] = useState(0);
+  const [totalGain, setTotalGain] = useState(0);
+  const [remainingSpins, setRemainingSpins] = useState(0);
+  const [autoSpins, setAutoSpins] = useState<number[]>([]);
 
-  const stopSpin = (finalGrid: number[][], callback: () => void) => {
-    setTimeout(() => {
-      setGrid(finalGrid);
-      callback();
-    }, 800);
-  };
+  useEffect(() => {
+    const generateGrid = () => {
+      return Array.from({ length: COLUMNS }, () =>
+        Array.from({ length: ROWS }, () => getRandomSymbol())
+      );
+    };
+    setGrid(generateGrid());
+  }, []);
 
-  const performSpin = (callback: (finalGrid: number[][], kazanc: number) => void) => {
-    const spinFrames: number[][][] = [];
-    for (let i = 0; i < 10; i++) {
-      spinFrames.push(generateGrid());
-    }
-    let frame = 0;
-    const interval = setInterval(() => {
-      setGrid(spinFrames[frame]);
-      frame++;
-      if (frame >= spinFrames.length) {
-        clearInterval(interval);
-        const finalGrid = generateGrid();
-        stopSpin(finalGrid, () => {
-          callback(finalGrid, Math.floor(bet * (Math.random() * 0.85 + 0.25)));
-        });
-      }
-    }, 100);
-  };
+  const performSpin = (isFree = false) => {
+    if (spinning) return;
+    const bet = isFree ? freeSpinBet : spinBet;
+    if (!isFree && balance < bet) return;
 
-  const handleSingleSpin = () => {
-    if (spinning || balance < bet) return;
     setSpinning(true);
-    playSound('spin.mp3');
-    setBalance(prev => prev - bet);
+    if (!isFree) setBalance((prev) => prev - bet);
 
-    performSpin((finalGrid, kazanc) => {
-      setBalance(prev => prev + kazanc);
-      playSound('coin.mp3');
-      setMessage(`+${kazanc.toFixed(2)} TL kazandınız!`);
-      setGrid(finalGrid);
+    const generateGrid = () => {
+      return Array.from({ length: COLUMNS }, () =>
+        Array.from({ length: ROWS }, () => getRandomSymbol())
+      );
+    };
+
+    const gain = isFree
+      ? Math.floor(Math.random() * ((freeSpinBet * 1.2) - (freeSpinBet * 0.5)) + freeSpinBet * 0.5) / 15
+      : parseFloat((Math.random() * bet * 1.1 + bet * 0.1).toFixed(2));
+
+    setTimeout(() => {
+      setGrid(generateGrid());
+      setSpinGain(gain);
+      setTotalGain((prev) => prev + gain);
+      setBalance((prev) => prev + gain);
+      setMessage(`+${gain.toFixed(2)} TL kazandınız!`);
       setSpinning(false);
-    });
+    }, 1000);
   };
 
-  const handleBuyFreeSpins = () => {
-    if (spinning || balance < bet) return;
-    setBalance(prev => prev - bet);
+  const handleSpin = () => {
+    performSpin(false);
+  };
 
-    const min = bet * 0.5;
-    const max = bet * 1.2;
+  const handleFreeSpinPurchase = () => {
+    if (spinning || balance < freeSpinBet) return;
+    setBalance((prev) => prev - freeSpinBet);
+
+    const min = freeSpinBet * 0.5;
+    const max = freeSpinBet * 1.2;
     const total = Math.floor(Math.random() * (max - min + 1) + min);
     const base = Math.floor(total / 15);
-    const results = Array(15).fill(base);
-    results[14] += total - base * 15;
+    const spins = Array(15).fill(base);
+    spins[14] += total - base * 15;
 
-    setFreeSpinResults(results);
-    setFreeSpinMode(true);
-    setCurrentFreeSpin(0);
-    setMessage(`🎁 Free Spin başladı!`);
+    setAutoSpins(spins);
+    setRemainingSpins(15);
+    setMessage('🎁 15 Free Spin Başlıyor...');
   };
 
   useEffect(() => {
-    if (freeSpinMode && currentFreeSpin < 15) {
-      setSpinning(true);
-      playSound('spin.mp3');
-
-      performSpin((finalGrid, _) => {
-        const kazanc = freeSpinResults[currentFreeSpin];
-        setBalance(prev => prev + kazanc);
-        playSound('coin.mp3');
-        setMessage(`🎁 Free Spin ${currentFreeSpin + 1}/15 → +${kazanc} TL`);
-        setGrid(finalGrid);
-        setCurrentFreeSpin(prev => prev + 1);
-        setSpinning(false);
-      });
-    } else if (freeSpinMode && currentFreeSpin === 15) {
-      setFreeSpinMode(false);
-      setMessage('🎉 Free Spin tamamlandı!');
+    if (remainingSpins > 0 && autoSpins.length) {
+      const timeout = setTimeout(() => {
+        performSpin(true);
+        setRemainingSpins((prev) => prev - 1);
+        setAutoSpins((prev) => prev.slice(1));
+      }, 1500);
+      return () => clearTimeout(timeout);
     }
-  }, [freeSpinMode, currentFreeSpin]);
+  }, [remainingSpins, autoSpins]);
 
   return (
-    <div className="slot-container">
-      <h1>🧞 Büyülü Slot</h1>
-      <p>💰 Bakiye: {balance.toFixed(2)} TL</p>
-
-      <div className="slot-grid">
-        {grid.map((column, colIndex) => (
-          <div className="slot-column" key={colIndex}>
-            {column.slice(0, VISIBLE_ROWS).map((symbol, rowIndex) => (
-              <div key={`${rowIndex}-${colIndex}`} className={`slot-box symbol-${symbol}`}></div>
+    <div className="slot-wrapper">
+      <img src="/slotarkapilan.png" alt="background" className="slot-bg" />
+      <div className="slot-frame">
+        <div className="slot-overlay">
+          <div className="slot-info-bar">
+            <div>Kazanç: {spinGain.toFixed(2)} TL</div>
+            <div>Toplam: {totalGain.toFixed(2)} TL</div>
+            <div>Kalan Spin: {remainingSpins}</div>
+          </div>
+          <div className="slot-grid">
+            {grid.map((col, colIndex) => (
+              <div key={colIndex} className="slot-column">
+                {col.map((symbol, rowIndex) => (
+                  <img
+                    key={rowIndex}
+                    src={`/symbols/${symbol}`}
+                    className="slot-symbol"
+                    alt="symbol"
+                  />
+                ))}
+              </div>
             ))}
           </div>
-        ))}
+
+          <div className="slot-controls">
+            <div className="dropdowns">
+              <label>
+                🎰 Spin Bahsi:
+                <select
+                  value={spinBet}
+                  onChange={(e) => setSpinBet(parseFloat(e.target.value))}
+                >
+                  {[1, 2, 5, 7.5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((v) => (
+                    <option key={v} value={v}>{v} TL</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                🎁 Free Spin:
+                <select
+                  value={freeSpinBet}
+                  onChange={(e) => setFreeSpinBet(parseInt(e.target.value))}
+                >
+                  {[100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map((v) => (
+                    <option key={v} value={v}>{v} TL</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className="buttons">
+              <button onClick={handleSpin} disabled={spinning}>🎰 Spin</button>
+              <button onClick={handleFreeSpinPurchase} disabled={spinning}>🎁 15 Free Spin Satın Al</button>
+            </div>
+
+            {message && <div className="slot-message">{message}</div>}
+          </div>
+        </div>
       </div>
-
-      {!freeSpinMode && (
-        <>
-          <select value={bet} onChange={(e) => setBet(Number(e.target.value))} disabled={spinning}>
-            {[100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map((v) => (
-              <option key={v} value={v}>{v} TL</option>
-            ))}
-          </select>
-
-          <div className="spin-options">
-            <button onClick={handleSingleSpin} disabled={spinning}>🎰 Spin Yap</button>
-            <button onClick={handleBuyFreeSpins} disabled={spinning}>🎁 15 Free Spin Satın Al</button>
-          </div>
-        </>
-      )}
-
-      {message && <p className="slot-message">{message}</p>}
     </div>
   );
 }
