@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './slot.css';
+import { useRouter } from 'next/navigation';
 
 const SYMBOLS = [
   'karpuz.png',
@@ -16,7 +17,7 @@ const SYMBOLS = [
 
 const COLUMNS = 6;
 const VISIBLE_ROWS = 5;
-const SPIN_FRAMES = 10;
+const SPIN_FRAMES = 20;
 
 const generateColumn = () => {
   const column = [];
@@ -34,6 +35,7 @@ const playSound = (filename: string) => {
 };
 
 export default function MagicalSlot() {
+  const router = useRouter();
   const [grid, setGrid] = useState(generateGrid());
   const [spinning, setSpinning] = useState(false);
   const [balance, setBalance] = useState(1000);
@@ -116,6 +118,8 @@ export default function MagicalSlot() {
 
   return (
     <div className="slot-wrapper">
+      <button onClick={() => router.push('/')} className="back-button">Ana Sayfaya Dön</button>
+
       <div className="slot-info-bar">
         <div className="slot-info-box">Kazanç: {spinResult.toFixed(2)} TL</div>
         <div className="slot-info-box">Toplam: {totalWin.toFixed(2)} TL</div>
