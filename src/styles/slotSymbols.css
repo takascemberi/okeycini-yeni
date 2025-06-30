@@ -1,0 +1,15 @@
+/* slotSymbols.css */
+.slot-symbol {
+  width: 64px;
+  height: 64px;
+  background-image: url('/sprites/slot-symbols.png');
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.symbol-0 { background-position: 0 0; }
+.symbol-1 { background-position: -64px 0; }
+.symbol-2 { background-position: -128px 0; }
+.symbol-3 { background-position: -192px 0; }
+.symbol-4 { background-position: -256px 0; }
+.symbol-5 { background-position: -320px 0; }
