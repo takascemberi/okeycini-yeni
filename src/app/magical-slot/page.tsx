@@ -1,4 +1,4 @@
-/* Yeni slot oyunu yapısına göre kodlar: 6x8 slot, meyve sembolleri, şık çerçeve, dropdown seçimi */
+/* Yeni slot oyunu yapısına göre kodlar: 6x5 slot, meyve sembolleri, gelişmiş animasyonlu spin efekti, şık çerçeve, dropdown seçimi */
 
 'use client';
 
@@ -10,6 +10,7 @@ const SYMBOLS = [
   'kiraz.png',
   'limon.png',
   'yildiz.png',
+  'mandalina.png',
   'zil.png',
   '7.png',
   'armut.png',
@@ -18,7 +19,8 @@ const SYMBOLS = [
 
 const getRandomSymbol = () => SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
 const COLUMNS = 6;
-const ROWS = 8;
+const ROWS = 5;
+const SPIN_FRAMES = 10;
 
 export default function MagicalSlot() {
   const [grid, setGrid] = useState<string[][]>([]);
@@ -26,22 +28,39 @@ export default function MagicalSlot() {
   const [spinBet, setSpinBet] = useState(1);
   const [freeSpinBet, setFreeSpinBet] = useState(100);
   const [balance, setBalance] = useState(1000);
-  const [message, setMessage] = useState('');
   const [spinGain, setSpinGain] = useState(0);
   const [totalGain, setTotalGain] = useState(0);
   const [remainingSpins, setRemainingSpins] = useState(0);
   const [autoSpins, setAutoSpins] = useState<number[]>([]);
 
+  const generateGrid = () => {
+    return Array.from({ length: COLUMNS }, () =>
+      Array.from({ length: ROWS }, () => getRandomSymbol())
+    );
+  };
+
   useEffect(() => {
-    const generateGrid = () => {
-      return Array.from({ length: COLUMNS }, () =>
-        Array.from({ length: ROWS }, () => getRandomSymbol())
-      );
-    };
     setGrid(generateGrid());
   }, []);
 
-  const performSpin = (isFree = false) => {
+  const animateSpin = (finalGrid: string[][], gain: number, callback?: () => void) => {
+    let frame = 0;
+    const interval = setInterval(() => {
+      setGrid(generateGrid());
+      frame++;
+      if (frame >= SPIN_FRAMES) {
+        clearInterval(interval);
+        setGrid(finalGrid);
+        setSpinGain(gain);
+        setTotalGain((prev) => prev + gain);
+        setBalance((prev) => prev + gain);
+        setSpinning(false);
+        if (callback) callback();
+      }
+    }, 100);
+  };
+
+  const performSpin = (isFree = false, callback?: () => void) => {
     if (spinning) return;
     const bet = isFree ? freeSpinBet : spinBet;
     if (!isFree && balance < bet) return;
@@ -49,24 +68,12 @@ export default function MagicalSlot() {
     setSpinning(true);
     if (!isFree) setBalance((prev) => prev - bet);
 
-    const generateGrid = () => {
-      return Array.from({ length: COLUMNS }, () =>
-        Array.from({ length: ROWS }, () => getRandomSymbol())
-      );
-    };
-
+    const finalGrid = generateGrid();
     const gain = isFree
       ? Math.floor(Math.random() * ((freeSpinBet * 1.2) - (freeSpinBet * 0.5)) + freeSpinBet * 0.5) / 15
-      : parseFloat((Math.random() * bet * 1.1 + bet * 0.1).toFixed(2));
+      : parseFloat((Math.random() * spinBet * 0.1 + spinBet * 0.1).toFixed(2));
 
-    setTimeout(() => {
-      setGrid(generateGrid());
-      setSpinGain(gain);
-      setTotalGain((prev) => prev + gain);
-      setBalance((prev) => prev + gain);
-      setMessage(`+${gain.toFixed(2)} TL kazandınız!`);
-      setSpinning(false);
-    }, 1000);
+    animateSpin(finalGrid, gain, callback);
   };
 
   const handleSpin = () => {
@@ -86,19 +93,16 @@ export default function MagicalSlot() {
 
     setAutoSpins(spins);
     setRemainingSpins(15);
-    setMessage('🎁 15 Free Spin Başlıyor...');
   };
 
   useEffect(() => {
-    if (remainingSpins > 0 && autoSpins.length) {
-      const timeout = setTimeout(() => {
-        performSpin(true);
+    if (remainingSpins > 0 && autoSpins.length && !spinning) {
+      performSpin(true, () => {
         setRemainingSpins((prev) => prev - 1);
         setAutoSpins((prev) => prev.slice(1));
-      }, 1500);
-      return () => clearTimeout(timeout);
+      });
     }
-  }, [remainingSpins, autoSpins]);
+  }, [remainingSpins, autoSpins, spinning]);
 
   return (
     <div className="slot-wrapper">
@@ -106,9 +110,9 @@ export default function MagicalSlot() {
       <div className="slot-frame">
         <div className="slot-overlay">
           <div className="slot-info-bar">
-            <div>Kazanç: {spinGain.toFixed(2)} TL</div>
-            <div>Toplam: {totalGain.toFixed(2)} TL</div>
-            <div>Kalan Spin: {remainingSpins}</div>
+            <div className="slot-info-box">Kazanç: {spinGain.toFixed(2)} TL</div>
+            <div className="slot-info-box">Toplam: {totalGain.toFixed(2)} TL</div>
+            <div className="slot-info-box">Kalan Spin: {remainingSpins}</div>
           </div>
           <div className="slot-grid">
             {grid.map((col, colIndex) => (
@@ -155,8 +159,6 @@ export default function MagicalSlot() {
               <button onClick={handleSpin} disabled={spinning}>🎰 Spin</button>
               <button onClick={handleFreeSpinPurchase} disabled={spinning}>🎁 15 Free Spin Satın Al</button>
             </div>
-
-            {message && <div className="slot-message">{message}</div>}
           </div>
         </div>
       </div>
