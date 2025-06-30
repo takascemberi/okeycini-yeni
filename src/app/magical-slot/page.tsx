@@ -3,14 +3,21 @@
 import React, { useState, useEffect } from 'react';
 import './slot.css';
 
-const SYMBOLS = ['🍒', '🔔', '💎', '🍋', '⭐', '🧞'];
+const SYMBOL_COUNT = 6;
+const COLUMNS = 5;
+const VISIBLE_ROWS = 3;
+const SPIN_ROWS = 10;
 
-const getRandomSymbol = () => SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+const generateColumn = () => {
+  const column = [];
+  for (let i = 0; i < SPIN_ROWS; i++) {
+    column.push(Math.floor(Math.random() * SYMBOL_COUNT));
+  }
+  return column;
+};
 
 const generateGrid = () => {
-  return Array.from({ length: 6 }, () =>
-    Array.from({ length: 5 }, () => getRandomSymbol())
-  );
+  return Array.from({ length: COLUMNS }, () => generateColumn());
 };
 
 const playSound = (filename: string) => {
@@ -23,50 +30,67 @@ export default function MagicalSlot() {
   const [spinning, setSpinning] = useState(false);
   const [balance, setBalance] = useState(1000);
   const [message, setMessage] = useState('');
+  const [bet, setBet] = useState(100);
   const [freeSpinMode, setFreeSpinMode] = useState(false);
   const [freeSpinResults, setFreeSpinResults] = useState<number[]>([]);
   const [currentFreeSpin, setCurrentFreeSpin] = useState(0);
 
-  const handleSingleSpin = (amount: number) => {
-    if (spinning || balance < amount) return;
+  const stopSpin = (finalGrid: number[][], callback: () => void) => {
+    setTimeout(() => {
+      setGrid(finalGrid);
+      callback();
+    }, 800);
+  };
 
+  const performSpin = (callback: (finalGrid: number[][], kazanc: number) => void) => {
+    const spinFrames: number[][][] = [];
+    for (let i = 0; i < 10; i++) {
+      spinFrames.push(generateGrid());
+    }
+    let frame = 0;
+    const interval = setInterval(() => {
+      setGrid(spinFrames[frame]);
+      frame++;
+      if (frame >= spinFrames.length) {
+        clearInterval(interval);
+        const finalGrid = generateGrid();
+        stopSpin(finalGrid, () => {
+          callback(finalGrid, Math.floor(bet * (Math.random() * 0.85 + 0.25)));
+        });
+      }
+    }, 100);
+  };
+
+  const handleSingleSpin = () => {
+    if (spinning || balance < bet) return;
     setSpinning(true);
     playSound('spin.mp3');
-    setBalance(prev => prev - amount);
+    setBalance(prev => prev - bet);
 
-    setTimeout(() => {
-      const kazanc = parseFloat((amount * (Math.random() * 0.85 + 0.25)).toFixed(2));
+    performSpin((finalGrid, kazanc) => {
       setBalance(prev => prev + kazanc);
       playSound('coin.mp3');
       setMessage(`+${kazanc.toFixed(2)} TL kazandınız!`);
-      setGrid(generateGrid());
+      setGrid(finalGrid);
       setSpinning(false);
-    }, 1000);
+    });
   };
 
-  const handleBuyFreeSpins = (amount: number) => {
-    if (spinning || balance < amount) return;
+  const handleBuyFreeSpins = () => {
+    if (spinning || balance < bet) return;
+    setBalance(prev => prev - bet);
 
-    setBalance(prev => prev - amount);
-    const min = amount * 0.5;
-    const max = amount * 1.2;
-    let total = Math.floor(Math.random() * (max - min + 1) + min);
-
-    const results: number[] = [];
-    for (let i = 0; i < 15; i++) {
-      let spinAmount = Math.floor(Math.random() * 5 + 3); // 3–7 TL
-      results.push(spinAmount);
-    }
-
-    // Dengele
-    const sum = results.reduce((a, b) => a + b, 0);
-    const fark = total - sum;
-    results[14] += fark;
+    const min = bet * 0.5;
+    const max = bet * 1.2;
+    const total = Math.floor(Math.random() * (max - min + 1) + min);
+    const base = Math.floor(total / 15);
+    const results = Array(15).fill(base);
+    results[14] += total - base * 15;
 
     setFreeSpinResults(results);
     setFreeSpinMode(true);
     setCurrentFreeSpin(0);
-    setMessage(`🎁 Free Spin başladı! Bekleyin...`);
+    setMessage(`🎁 Free Spin başladı!`);
   };
 
   useEffect(() => {
@@ -74,15 +98,15 @@ export default function MagicalSlot() {
       setSpinning(true);
       playSound('spin.mp3');
 
-      setTimeout(() => {
-        setGrid(generateGrid());
+      performSpin((finalGrid, _) => {
         const kazanc = freeSpinResults[currentFreeSpin];
         setBalance(prev => prev + kazanc);
-        setMessage(`🎁 Free Spin ${currentFreeSpin + 1}/15 → +${kazanc} TL`);
         playSound('coin.mp3');
+        setMessage(`🎁 Free Spin ${currentFreeSpin + 1}/15 → +${kazanc} TL`);
+        setGrid(finalGrid);
         setCurrentFreeSpin(prev => prev + 1);
         setSpinning(false);
-      }, 1200);
+      });
     } else if (freeSpinMode && currentFreeSpin === 15) {
       setFreeSpinMode(false);
       setMessage('🎉 Free Spin tamamlandı!');
@@ -93,27 +117,28 @@ export default function MagicalSlot() {
     <div className="slot-container">
       <h1>🧞 Büyülü Slot</h1>
       <p>💰 Bakiye: {balance.toFixed(2)} TL</p>
+
       <div className="slot-grid">
-        {grid.map((row, rowIndex) =>
-          row.map((symbol, colIndex) => (
-            <div key={`${rowIndex}-${colIndex}`} className="slot-box">
-              {symbol}
-            </div>
-          ))
-        )}
+        {grid.map((column, colIndex) => (
+          <div className="slot-column" key={colIndex}>
+            {column.slice(0, VISIBLE_ROWS).map((symbol, rowIndex) => (
+              <div key={`${rowIndex}-${colIndex}`} className={`slot-box symbol-${symbol}`}></div>
+            ))}
+          </div>
+        ))}
       </div>
 
       {!freeSpinMode && (
         <>
+          <select value={bet} onChange={(e) => setBet(Number(e.target.value))} disabled={spinning}>
+            {[100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map((v) => (
+              <option key={v} value={v}>{v} TL</option>
+            ))}
+          </select>
+
           <div className="spin-options">
-            <button disabled={spinning} onClick={() => handleSingleSpin(100)}>🎰 100 TL Spin</button>
-            <button disabled={spinning} onClick={() => handleSingleSpin(500)}>🎰 500 TL Spin</button>
-            <button disabled={spinning} onClick={() => handleSingleSpin(1000)}>🎰 1000 TL Spin</button>
-          </div>
-          <div className="freespin-options">
-            <button disabled={spinning} onClick={() => handleBuyFreeSpins(100)}>🎁 100 TL Free Spin</button>
-            <button disabled={spinning} onClick={() => handleBuyFreeSpins(500)}>🎁 500 TL Free Spin</button>
-            <button disabled={spinning} onClick={() => handleBuyFreeSpins(1000)}>🎁 1000 TL Free Spin</button>
+            <button onClick={handleSingleSpin} disabled={spinning}>🎰 Spin Yap</button>
+            <button onClick={handleBuyFreeSpins} disabled={spinning}>🎁 15 Free Spin Satın Al</button>
           </div>
         </>
       )}
