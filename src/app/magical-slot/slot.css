@@ -3,7 +3,8 @@
 .slot-wrapper {
   position: relative;
   min-height: 100vh;
-  background-color: black;
+  background: url('/slotarkaplan.png') no-repeat center center fixed;
+  background-size: cover;
   overflow: hidden;
   font-family: sans-serif;
   color: white;
@@ -12,24 +13,19 @@
 }
 
 .slot-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
+  display: none; /* artık kullanılmıyor */
 }
 
 .slot-frame {
   position: relative;
   width: fit-content;
   margin: auto;
-  background: rgba(135, 206, 235, 0.5); /* %50 şeffaf gökyüzü mavisi */
+  background: rgba(135, 206, 235, 0.2); /* %80 şeffaf gökyüzü mavisi */
   border: 12px solid #8B4513; /* ahşap desenli kenarlık */
   border-radius: 20px;
   padding: 16px;
   z-index: 1;
+  backdrop-filter: blur(4px);
 }
 
 .slot-overlay {
@@ -42,6 +38,7 @@
   justify-content: center;
   gap: 12px;
   margin-bottom: 20px;
+  z-index: 3;
 }
 
 .slot-info-box {
@@ -59,6 +56,8 @@
   gap: 8px;
   justify-content: center;
   margin-bottom: 20px;
+  z-index: 2;
+  position: relative;
 }
 
 .slot-column {
@@ -72,6 +71,7 @@
   height: 64px;
   object-fit: contain;
   background: none;
+  z-index: 3;
 }
 
 .slot-controls {
@@ -79,6 +79,7 @@
   flex-direction: column;
   gap: 12px;
   margin-top: 20px;
+  z-index: 3;
 }
 
 .dropdowns {
